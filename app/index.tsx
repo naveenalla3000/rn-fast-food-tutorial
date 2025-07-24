@@ -1,12 +1,10 @@
-import { Text, View } from "react-native";
-import "./global.css";
- 
+import { FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 export default function Index() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl text-center font-bold text-blue-500">
-        Naveen Alla {"\n"} React Native Expo Template
-      </Text>
-    </View>
+    <SafeAreaView>
+      <FlatList data={[]} renderItem={({ item }) => <div />} />
+    </SafeAreaView>
   );
 }

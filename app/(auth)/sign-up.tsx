@@ -1,5 +1,7 @@
 import CustomButton from "@/components/CustomButton";
 import CustomInput from "@/components/CustomInput";
+import { createUser } from "@/lib/appwrite";
+import * as Sentry from "@sentry/react-native";
 import { Link, router } from "expo-router";
 import React from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
@@ -11,18 +13,26 @@ const SignUp = () => {
     email: "",
     password: "",
   });
-  const handleSignUp = () => {
-    if ( !form.name || !form.email || !form.password) {
+  const handleSignUp = async () => {
+    if (!form.name || !form.email || !form.password) {
       return Alert.alert("Error", "Please fill in all fields");
     }
+    const { email, password, name } = form;
     setIsSubmitting(true);
-    // Simulate a sign-in process
-    setTimeout(() => {
+    try {
+      await createUser({
+        email,
+        password,
+        name,
+      });
+      router.replace("/(auth)/sign-In");
+    } catch (error: any) {
+      console.error("Sign Up Error:", error.message);
+      Alert.alert("Error", error.message || "An error occurred during sign up");
+      Sentry.captureEvent(error);
+    } finally {
       setIsSubmitting(false);
-      Alert.alert("Success", "You have signed up successfully!");
-      router.replace("/(tabs)");
-      // Navigate to the home screen or perform other actions
-    }, 2000);
+    }
   };
   return (
     <View className="bg-white gap-10 rounded-lg p-5 mt-5">

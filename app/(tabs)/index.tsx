@@ -1,8 +1,10 @@
 import CardButton from "@/components/CartButton";
 import { images, offers } from "@/constants";
+import * as Sentry from "@sentry/react-native";
 import cn from "clsx";
 import React, { Fragment } from "react";
 import {
+  Button,
   FlatList,
   Image,
   ImageBackground,
@@ -79,6 +81,18 @@ export default function Index() {
                 </TouchableOpacity>
               </View>
               <CardButton />
+            </View>
+          );
+        }}
+        ListFooterComponent={() => {
+          return (
+            <View>
+              <Button
+                title="Try!"
+                onPress={() => {
+                  Sentry.captureException(new Error("First error"));
+                }}
+              />
             </View>
           );
         }}

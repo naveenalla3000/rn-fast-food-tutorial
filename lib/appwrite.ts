@@ -63,8 +63,11 @@ export const createUser = async ({
 
 export const SignIn = async ({ email, password }: SignInParams) => {
   try {
-    const session = await account.createEmailPasswordSession(email, password);
-    if (!session) {
+    const newSession = await account.createEmailPasswordSession(
+      email,
+      password
+    );
+    if (!newSession) {
       throw new Error("Sign in failed");
     }
     const user = await account.get();
@@ -80,21 +83,16 @@ export const SignIn = async ({ email, password }: SignInParams) => {
 
 export const getCurrentUser = async () => {
   try {
-    const currentAccount = await account.get();
-    if (!currentAccount) {
-      throw new Error("No user is currently signed in");
-    }
-    const currentUser = await databases.getDocument(
+    const user = await account.get(); // fetch signed-in user
+    const response = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.userCollectionId,
-      Query.equal("accountId", currentAccount.$id)
+      [Query.equal("accountId", user.$id)]
     );
-    if (!currentUser) {
-      throw new Error("Current user document not found");
-    }
-    return currentUser;
-  } catch (error) {
-    console.error("Error getting current user:", error);
-    throw new Error(error as string);
+    return response.documents[0];
+  } catch (error: any) {
+    console.error("Error getting current user:", error.message);
+    return null; // return null if no session or any error
   }
 };
+

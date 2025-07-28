@@ -6,13 +6,19 @@ import {
   Databases,
   ID,
   Query,
+  Storage,
 } from "react-native-appwrite";
 
 export const appwriteConfig = {
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT as string,
   platform: "com.naveenalla.fastfood",
   databaseId: "68832e6f0012b43a6807",
+  bucketId: "6886ed19000c13a90b97",
   userCollectionId: "68832e9900098f3c8550",
+  categoryCollectionId: "6886249f00008148f555",
+  menuCollectionId: "6886253d000292b539a5",
+  customizationCollectionId: "68862d31000e0054bbd4",
+  menu_customizationCollectionId: "6886ebf8003379bcbae1",
   projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID as string,
 };
 
@@ -27,6 +33,8 @@ export const account = new Account(client);
 export const databases = new Databases(client);
 
 export const avatars = new Avatars(client);
+
+export const storage = new Storage(client);
 
 export const createUser = async ({
   email,
@@ -95,4 +103,3 @@ export const getCurrentUser = async () => {
     return null; // return null if no session or any error
   }
 };
-

@@ -23,7 +23,6 @@ const MenuCard = ({
   item: MenuItem;
 }) => {
   const imageUrl = image_url;
-  console.log("Image URL:", imageUrl);
   return (
     <TouchableOpacity
       className="menu-card"

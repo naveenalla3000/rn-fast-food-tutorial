@@ -106,22 +106,20 @@ export const getCurrentUser = async () => {
 
 export const getMenu = async ({ category, query }: GetMenuParams) => {
   try {
-    const queres: string[] = [];
-    if (category) {
-      queres.push(Query.equal("category", category));
-    }
-    if (query) {
-      queres.push(Query.search("name", query));
-    }
-    const response = await databases.listDocuments(
+    const queries: string[] = [];
+
+    if (category) queries.push(Query.equal("categories", category));
+    if (query) queries.push(Query.search("name", query));
+
+    const menus = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.menuCollectionId,
-      queres
+      queries
     );
-    return response.documents;
-  } catch (error) {
-    console.error("Error fetching menu:", error);
-    throw new Error(error as string);
+
+    return menus.documents;
+  } catch (e) {
+    throw new Error(e as string);
   }
 };
 
@@ -129,8 +127,7 @@ export const getCategories = async () => {
   try {
     const categories = await databases.listDocuments(
       appwriteConfig.databaseId,
-      appwriteConfig.categoryCollectionId,
-      [Query.orderAsc("name")]
+      appwriteConfig.categoryCollectionId
     );
     return categories.documents;
   } catch (error) {

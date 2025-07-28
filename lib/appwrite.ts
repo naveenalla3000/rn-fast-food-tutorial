@@ -1,4 +1,4 @@
-import { CreateUserParams, SignInParams } from "@/type";
+import { CreateUserParams, GetMenuParams, SignInParams } from "@/type";
 import {
   Account,
   Avatars,
@@ -101,5 +101,40 @@ export const getCurrentUser = async () => {
   } catch (error: any) {
     console.error("Error getting current user:", error.message);
     return null; // return null if no session or any error
+  }
+};
+
+export const getMenu = async ({ category, query }: GetMenuParams) => {
+  try {
+    const queres: string[] = [];
+    if (category) {
+      queres.push(Query.equal("category", category));
+    }
+    if (query) {
+      queres.push(Query.search("name", query));
+    }
+    const response = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.menuCollectionId,
+      queres
+    );
+    return response.documents;
+  } catch (error) {
+    console.error("Error fetching menu:", error);
+    throw new Error(error as string);
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const categories = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.categoryCollectionId,
+      [Query.orderAsc("name")]
+    );
+    return categories.documents;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw new Error(error as string);
   }
 };
